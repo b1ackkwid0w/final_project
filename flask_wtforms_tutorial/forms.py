@@ -9,6 +9,11 @@ from wtforms import (
 #from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
+class ReservationCosts():
+    matrix = [[100, 75, 50, 100] for row in range(12)]
+    def get_seat_price(matrix, row, col):
+        return matrix[row][col]
+
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
@@ -58,6 +63,10 @@ class ReservationForm(FlaskForm):
     )
 
     reserve = SubmitField("Reserve a Seat")
+    if reserve is True:
+        cost = ReservationCosts()
+        print(cost.matrix)
+
  
 
     seating_map = [['O']*4 for row in range(12)]
