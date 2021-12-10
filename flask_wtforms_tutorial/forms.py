@@ -9,9 +9,9 @@ from wtforms import (
 from wtforms.validators import DataRequired
 
 class ReservationCosts():
-    matrix = [[100, 75, 50, 100] for row in range(12)]
-    def get_seat_price(matrix, row, col):
-        return matrix[row][col]
+    matrix = [100, 75, 50, 100]
+    def get_seat_price(matrix, seat):
+        return matrix[seat-1]
 
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
@@ -61,6 +61,9 @@ class ReservationForm(FlaskForm):
     if reserve:
         cost = ReservationCosts()
         print(cost.matrix)
+        price = cost.get_seat_price(seat)
+        print(price)
+        
         
 
 
