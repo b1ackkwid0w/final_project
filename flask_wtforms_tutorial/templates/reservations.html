@@ -6,11 +6,6 @@
 
 {% block content %}
 <div class="formwrapper">
-
-  <!-- <a href="admin.html">Admin Login</a>
-  <a href="options.html">Options</a>
-  <a href="reservations.html">Reservations</a> -->
-
   <h2 class="title">Reserve Your Seat</h2>
   
   <form method="POST" action="/admin">
@@ -50,6 +45,22 @@
             {% endfor %}
           </ul>
         {% endif %}
+        <div class="form-field">{{ form.seating_chart.label }} 
+          <title>{% block title %}{% endblock %}</title>
+          <ol>
+          {% for seat in form.seating_chart %}
+            <li>{{ seat }}</a></li>
+          {% endfor %}
+          </ol>
+          {% if form.seating_chart.errors %}
+            <ul class="errors">
+              {% for error in form.seating_chart.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+
       </div>
       
       {{ form.reserve }}
