@@ -8,6 +8,11 @@ from wtforms import (
 
 from wtforms.validators import DataRequired
 
+class ReservationCosts():
+    matrix = [[100, 75, 50, 100] for row in range(12)]
+    def get_seat_price(matrix, row, col):
+        return matrix[row][col]
+
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
@@ -24,7 +29,6 @@ class UserOptionForm(FlaskForm):
 
 class ReservationForm(FlaskForm):
     """Reservation Form"""
-    
     first_name = StringField('First Name', [DataRequired()])
     last_name = StringField('Last Name', [DataRequired()])
     row = SelectField("Choose Row", [DataRequired()],
@@ -53,8 +57,12 @@ class ReservationForm(FlaskForm):
             ("4", "4"),
         ],
     )
-
     reserve = SubmitField("Reserve a Seat")
+    if reserve:
+        cost = ReservationCosts()
+        print(cost.matrix)
+        
+
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
@@ -62,6 +70,3 @@ class AdminLoginForm(FlaskForm):
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
-
-
-
