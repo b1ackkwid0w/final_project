@@ -5,17 +5,14 @@ from wtforms import (
     StringField,
     SubmitField,
 )
-
+#from datetime import date
+#from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
-
-class ReservationCosts():
-    matrix = [[100, 75, 50, 100] for row in range(12)]
-    def get_seat_price(matrix, row, col):
-        return matrix[row][col]
 
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
+    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     option = SelectField("Choose an Option",[DataRequired()],
         choices=[
             ("", "Choose an option"),
@@ -29,6 +26,8 @@ class UserOptionForm(FlaskForm):
 
 class ReservationForm(FlaskForm):
     """Reservation Form"""
+    
+    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     first_name = StringField('First Name', [DataRequired()])
     last_name = StringField('Last Name', [DataRequired()])
     row = SelectField("Choose Row", [DataRequired()],
@@ -57,16 +56,42 @@ class ReservationForm(FlaskForm):
             ("4", "4"),
         ],
     )
-    reserve = SubmitField("Reserve a Seat")
-    if reserve:
-        cost = ReservationCosts()
-        print(cost.matrix)
-        
 
+    reserve = SubmitField("Reserve a Seat")
+ 
+
+    seating_map = [['O']*4 for row in range(12)]
+    with open("reservations.txt", "r") as file:
+        for line in file:
+            string = line.split(",")
+            x = int(string[1])
+            y = int(string[2])
+            seating_map[x][y] = 'X'
+        file.close()
+    seating_chart = seating_map
+
+
+    
+        
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
     
+    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
+    if login is True:
+        seating_map = [['O']*4 for row in range(12)]
+        with open("reservations.txt", "r") as file:
+            for line in file:
+                string = line.split(",")
+                x = int(string[1])
+                y = int(string[2])
+                seating_map[x][y] = 'X'
+            file.close()
+        seating_chart = seating_map
+    else:
+        seating_chart = ''
+
+
