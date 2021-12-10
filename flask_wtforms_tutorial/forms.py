@@ -24,13 +24,25 @@ class UserOptionForm(FlaskForm):
 class ReservationCosts():
     matrix = [100, 75, 50, 100]
 
-    def get_seat_price(matrix, seat):
-        return matrix[seat-1]
+    def get_seat_price(self, matrix, seat):
+        print(type(seat))
+        # return int(matrix[int(seat)-1])
 
-    def get_total_sales(matrix):
-        # read from reservations.txt
-        # extract into array or something and add up matrix[seat-1] for each.
-        pass
+    def get_total_sales(self, matrix):
+        salesFile = open('reservations.txt', 'r')
+        listOfSales = []
+        
+        for line in salesFile:
+            strippedLine = line.strip()
+            lineList = strippedLine.split(", ")
+            seatNum = lineList[2]
+            seatCost = matrix[int(seatNum)-1]
+            listOfSales.append(seatCost)
+
+        salesFile.close()    
+
+        totalCost = sum(listOfSales)
+        return totalCost
 
 class ReservationForm(FlaskForm):
     """Reservation Form"""
@@ -65,8 +77,7 @@ class ReservationForm(FlaskForm):
     reserve = SubmitField("Reserve a Seat")
     if reserve:
         cost = ReservationCosts()
-        print(cost.matrix)
-        price = cost.get_seat_price(seat)
+        price = cost.get_seat_price(cost.matrix, seat)
         print(price)
 
 class AdminLoginForm(FlaskForm):
@@ -75,3 +86,8 @@ class AdminLoginForm(FlaskForm):
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
+    
+    if login:
+        cost = ReservationCosts()
+        total = cost.get_total_sales(cost.matrix)
+        print(total)
