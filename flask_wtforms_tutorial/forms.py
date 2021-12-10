@@ -12,7 +12,6 @@ from wtforms.validators import DataRequired
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
-    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     option = SelectField("Choose an Option",[DataRequired()],
         choices=[
             ("", "Choose an option"),
@@ -22,6 +21,18 @@ class UserOptionForm(FlaskForm):
     )
 
     submit = SubmitField("Submit")
+
+class ReservationList():
+    def get_seating_chart(self):
+        seating_map = [['O']*4 for row in range(12)]
+        with open("reservations.txt", "r") as file:
+            for line in file:
+                string = line.split(",")
+                x = int(string[1])
+                y = int(string[2])
+                seating_map[x][y] = 'X'
+            file.close()
+        return seating_map
 
 class ReservationCosts():
     matrix = [100, 75, 50, 100]
@@ -49,16 +60,8 @@ class ReservationCosts():
 class ReservationForm(FlaskForm):
     """Reservation Form"""
     
-    seating_map = [['O']*4 for row in range(12)]
-    with open("reservations.txt", "r") as file:
-        for line in file:
-            string = line.split(",")
-            x = int(string[1])
-            y = int(string[2])
-            seating_map[x][y] = 'X'
-        file.close()
-    seating_chart = seating_map
-
+    reservation_list = ReservationList()
+    seating_chart = reservation_list.get_seating_chart()
 
     first_name = StringField('First Name', [DataRequired()])
     last_name = StringField('Last Name', [DataRequired()])
@@ -92,46 +95,63 @@ class ReservationForm(FlaskForm):
     reserve = SubmitField("Reserve a Seat")
     if reserve is True:
         cost = ReservationCosts()
-        # print(cost.matrix)
         price = cost.get_seat_price(cost.matrix, seat)
-        # print(price)
- 
 
-    # seating_map = [['O']*4 for row in range(12)]
-    # with open("reservations.txt", "r") as file:
-    #     for line in file:
-    #         string = line.split(",")
-    #         x = int(string[1])
-    #         y = int(string[2])
-    #         seating_map[x][y] = 'X'
-    #     file.close()
-    # seating_chart = seating_map
-
-    
+# class UserLoginInfo():
+#     def get_user_login():
+#         userLoginFile = open('passcodes.txt', 'r')
+#         userLoginList = []
         
+#         for line in salesFile:
+#             strippedLine = line.strip()
+#             lineList = strippedLine.split(", ")
+#             seatNum = lineList[2]
+#             seatCost = matrix[int(seatNum)-1]
+#             listOfSales.append(seatCost)
+
+#         salesFile.close()    
+
+#         totalCost = sum(listOfSales)
+#         return totalCost
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
     
-    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
+    seating_chart = []
     if login is True:
+
+        # with open ('passcodes.txt', 'r') as file:
+        #     reader = csv.reader(file, delimiter=",")
+        #     for row in reader: 
+        #         if (request.form['username'] == 'admin1' and request.form['password'] == '12345'):
+        #             return redirect('reservations')
+
+        # userLoginList = []
+        # with open ('passcodes.txt', 'r') as file:
+        #     reader = csv.reader(file, delimiter=", ")
+        #     for row in reader: 
+        #         row[1] = row[1].strip()
+        #         userInfo.append(row)
+
+        # if request.method == 'POST' and form.validate_on_submit():
+        #     for user in userInfo:
+        #         if (request.form['username'] == user[0] and request.form['password'] == user[1]):
+        #             pass    # return redirect('reservations')
+        #             # Redirected for testing purposes
+        #             # We need to show the reservation table right here
+        #             # But I can't get anything to print in the form
 
         # get total sales
         cost = ReservationCosts()
         total = cost.get_total_sales(cost.matrix)
         # print(total)
 
-        seating_map = [['O']*4 for row in range(12)]
-        with open("reservations.txt", "r") as file:
-            for line in file:
-                string = line.split(",")
-                x = int(string[1])
-                y = int(string[2])
-                seating_map[x][y] = 'X'
-            file.close()
-        seating_chart = seating_map
-    else:
-        seating_chart = ''
+        # get seating chart
+        reservation_list = ReservationList()
+        seating_chart = reservation_list.get_seating_chart()
+        
+    elif login is False:
+        error_code = "Incorrect username or password."
