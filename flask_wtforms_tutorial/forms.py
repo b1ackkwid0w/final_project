@@ -8,11 +8,6 @@ from wtforms import (
 
 from wtforms.validators import DataRequired
 
-class ReservationCosts():
-    matrix = [100, 75, 50, 100]
-    def get_seat_price(matrix, seat):
-        return matrix[seat-1]
-
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
@@ -26,6 +21,16 @@ class UserOptionForm(FlaskForm):
 
     submit = SubmitField("Submit")
 
+class ReservationCosts():
+    matrix = [100, 75, 50, 100]
+
+    def get_seat_price(matrix, seat):
+        return matrix[seat-1]
+
+    def get_total_sales(matrix):
+        # read from reservations.txt
+        # extract into array or something and add up matrix[seat-1] for each.
+        pass
 
 class ReservationForm(FlaskForm):
     """Reservation Form"""
@@ -63,9 +68,6 @@ class ReservationForm(FlaskForm):
         print(cost.matrix)
         price = cost.get_seat_price(seat)
         print(price)
-        
-        
-
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
