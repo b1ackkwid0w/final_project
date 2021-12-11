@@ -93,26 +93,10 @@ class ReservationForm(FlaskForm):
     )
 
     reserve = SubmitField("Reserve a Seat")
-    if reserve is True:
-        cost = ReservationCosts()
-        price = cost.get_seat_price(cost.matrix, seat)
 
-# class UserLoginInfo():
-#     def get_user_login():
-#         userLoginFile = open('passcodes.txt', 'r')
-#         userLoginList = []
-        
-#         for line in salesFile:
-#             strippedLine = line.strip()
-#             lineList = strippedLine.split(", ")
-#             seatNum = lineList[2]
-#             seatCost = matrix[int(seatNum)-1]
-#             listOfSales.append(seatCost)
-
-#         salesFile.close()    
-
-#         totalCost = sum(listOfSales)
-#         return totalCost
+    cost = ReservationCosts()
+    seat_price = cost.get_seat_price(cost.matrix, seat)
+    reservation_num = "blah blah plart plart pleau" # temporary. Replace with actual code.
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""

@@ -65,9 +65,13 @@
               {% endfor %}
             </ul>
           {% endif %}
+          {% if form.reserve.data == True %}
+          <div class="form-field">
+            <h2>Reservation Code: {{ form.reservation_num }}</h2>
+          </div>
+          {% endif %}
         </div>
       </div>
-      
       {{ form.reserve }}
   </form>
   
