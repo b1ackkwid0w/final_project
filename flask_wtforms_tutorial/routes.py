@@ -97,7 +97,7 @@ def getReservedSeats():
 
 def writeReservation(firstName, row, seat):
     reservationCode = str(generateReservationCode(firstName))
-    reservation = " " + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
+    reservation = "" + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
     with open('reservations.txt', 'a') as file:
         file.write(reservation)
 
@@ -109,3 +109,4 @@ def generateReservationCode(first_name):
         reservation_num += first_name[i]
         reservation_num += code[i]
     reservation_num += code[len(first_name):]
+    return reservation_num
