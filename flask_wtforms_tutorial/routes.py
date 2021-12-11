@@ -1,5 +1,5 @@
 from flask import current_app as app
-from flask import redirect, render_template, url_for, request, flash
+from flask import redirect, render_template, url_for, request, flash, jsonify
 
 from .forms import *
 
@@ -53,8 +53,9 @@ def reservations():
     form = ReservationForm()
 
     if request.method == 'POST' and form.validate_on_submit:
+        return jsonify(reservedSeats)
         selectedRow = int(request.form['row'].strip()) - 1
-        selectedSeat = str(int(request.form['seat'].strip()) - 1)
+        selectedSeat = int(request.form['seat'].strip()) - 1
         if(reservedSeats[selectedRow][selectedSeat]) == False:
             # Add reservation to reservations.txt
             
@@ -62,7 +63,7 @@ def reservations():
             print(reservedSeats[selectedRow][selectedSeat])
         else:
             print("Sorry that seat is already reserved")
-            return redirect('/admin')
+            return jsonify(reservedSeats)
 
     return render_template("reservations.html", form=form, template="form-template")
 
@@ -79,13 +80,16 @@ def getReservedSeats():
     reservedSeats = []
     i = 0
     while i < 12:
-        reservedSeats.append({'0': 'False', '1': 'False', '2': 'False', '3': 'False'})
+        reservedSeats.append({0: False, 1: False, 2: False, 3: False})
         i += 1
 
     with open ('reservations.txt', 'r') as file:
         reader = csv.reader(file, delimiter=",")
         for row in reader:
-            if reservedSeats[int(row[1].strip())][row[2].strip()] == False:
-                reservedSeats[int(row[1].strip())][row[2].strip()] = True
+            currentRow = int(row[1].strip())
+            currentSeat = int(row[2].strip())
+            
+            if reservedSeats[currentRow][currentSeat] == False:
+                reservedSeats[currentRow][currentSeat] = True
 
     return reservedSeats
