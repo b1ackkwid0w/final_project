@@ -35,7 +35,7 @@ def admin():
     if request.method == 'POST' and form.validate_on_submit():
         for user in userInfo:
                 if (request.form['username'] == user[0] and request.form['password'] == user[1]):
-                    return redirect('reservations')
+                    print("Reservation Table")
                     # Redirected for testing purposes
                     # We need to show the reservation table right here
                     # But I can't get anything to print in the form
@@ -47,8 +47,22 @@ def admin():
 
 @app.route("/reservations", methods=['GET', 'POST'])
 def reservations():
+    
+    reservedSeats = getReservedSeats()
 
     form = ReservationForm()
+
+    if request.method == 'POST' and form.validate_on_submit:
+        selectedRow = int(request.form['row'].strip()) - 1
+        selectedSeat = str(int(request.form['seat'].strip()) - 1)
+        if(reservedSeats[selectedRow][selectedSeat]) == False:
+            # Add reservation to reservations.txt
+            
+            reservedSeats[selectedRow][selectedSeat] = True
+            print(reservedSeats[selectedRow][selectedSeat])
+        else:
+            print("Sorry that seat is already reserved")
+            return redirect('/admin')
 
     return render_template("reservations.html", form=form, template="form-template")
 
@@ -60,3 +74,18 @@ def getUserInfo():
                row[1] = row[1].strip()
                userInfo.append(row)
      return userInfo
+
+def getReservedSeats():
+    reservedSeats = []
+    i = 0
+    while i < 12:
+        reservedSeats.append({'0': 'False', '1': 'False', '2': 'False', '3': 'False'})
+        i += 1
+
+    with open ('reservations.txt', 'r') as file:
+        reader = csv.reader(file, delimiter=",")
+        for row in reader:
+            if reservedSeats[int(row[1].strip())][row[2].strip()] == False:
+                reservedSeats[int(row[1].strip())][row[2].strip()] = True
+
+    return reservedSeats
