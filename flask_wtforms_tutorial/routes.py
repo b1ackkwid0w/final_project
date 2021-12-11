@@ -64,7 +64,7 @@ def reservations():
             reservedSeats[selectedRow][selectedSeat] = True
             return jsonify(reservedSeats)
         else:
-            return "Sorry that seat is already reserved\n" + jsonify(reservedSeats)
+            return "Sorry that seat is already reserved\n" + str(jsonify(reservedSeats))
 
     return render_template("reservations.html", form=form, template="form-template")
 
