@@ -1,3 +1,4 @@
+from os import write
 from flask import current_app as app
 from flask import redirect, render_template, url_for, request, flash, jsonify
 
@@ -53,17 +54,17 @@ def reservations():
     form = ReservationForm()
 
     if request.method == 'POST' and form.validate_on_submit:
-        return jsonify(reservedSeats)
         selectedRow = int(request.form['row'].strip()) - 1
         selectedSeat = int(request.form['seat'].strip()) - 1
+        firstName = str(request.form['first_name'])
+
         if(reservedSeats[selectedRow][selectedSeat]) == False:
-            # Add reservation to reservations.txt
+            writeReservation(firstName, selectedRow, selectedSeat)
             
             reservedSeats[selectedRow][selectedSeat] = True
-            print(reservedSeats[selectedRow][selectedSeat])
-        else:
-            print("Sorry that seat is already reserved")
             return jsonify(reservedSeats)
+        else:
+            return "Sorry that seat is already reserved\n" + jsonify(reservedSeats)
 
     return render_template("reservations.html", form=form, template="form-template")
 
@@ -93,3 +94,18 @@ def getReservedSeats():
                 reservedSeats[currentRow][currentSeat] = True
 
     return reservedSeats
+
+def writeReservation(firstName, row, seat):
+    reservationCode = str(generateReservationCode(firstName))
+    reservation = " " + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
+    with open('reservations.txt', 'a') as file:
+        file.write(reservation)
+
+def generateReservationCode(first_name):
+    reservation_num = ""  # initializing reservation number.
+    code = "INFOTC1040"  # code for generating the reservation number.
+
+    for i in range(len(first_name)):
+        reservation_num += first_name[i]
+        reservation_num += code[i]
+    reservation_num += code[len(first_name):]
