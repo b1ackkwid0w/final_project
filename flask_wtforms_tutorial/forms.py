@@ -9,15 +9,9 @@ from wtforms import (
 #from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired
 
-class ReservationCosts():
-    matrix = [[100, 75, 50, 100] for row in range(12)]
-    def get_seat_price(matrix, row, col):
-        return matrix[row][col]
-
 class UserOptionForm(FlaskForm):
     """Generate Your Graph."""
     
-    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     option = SelectField("Choose an Option",[DataRequired()],
         choices=[
             ("", "Choose an option"),
@@ -28,11 +22,47 @@ class UserOptionForm(FlaskForm):
 
     submit = SubmitField("Submit")
 
+class ReservationList():
+    def get_seating_chart(self):
+        seating_map = [['O']*4 for row in range(12)]
+        with open("reservations.txt", "r") as file:
+            for line in file:
+                string = line.split(",")
+                x = int(string[1])
+                y = int(string[2])
+                seating_map[x][y] = 'X'
+            file.close()
+        return seating_map
+
+class ReservationCosts():
+    matrix = [100, 75, 50, 100]
+
+    def get_seat_price(self, matrix, seat):
+        print(type(seat))
+        # return int(matrix[int(seat)-1])
+
+    def get_total_sales(self, matrix):
+        salesFile = open('reservations.txt', 'r')
+        listOfSales = []
+        
+        for line in salesFile:
+            strippedLine = line.strip()
+            lineList = strippedLine.split(", ")
+            seatNum = lineList[2]
+            seatCost = matrix[int(seatNum)-1]
+            listOfSales.append(seatCost)
+
+        salesFile.close()    
+
+        totalCost = sum(listOfSales)
+        return totalCost
 
 class ReservationForm(FlaskForm):
     """Reservation Form"""
     
-    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
+    reservation_list = ReservationList()
+    seating_chart = reservation_list.get_seating_chart()
+
     first_name = StringField('First Name', [DataRequired()])
     last_name = StringField('Last Name', [DataRequired()])
     row = SelectField("Choose Row", [DataRequired()],
@@ -63,44 +93,40 @@ class ReservationForm(FlaskForm):
     )
 
     reserve = SubmitField("Reserve a Seat")
-    if reserve is True:
-        cost = ReservationCosts()
-        print(cost.matrix)
 
- 
-
-    seating_map = [['O']*4 for row in range(12)]
-    with open("reservations.txt", "r") as file:
-        for line in file:
-            string = line.split(",")
-            x = int(string[1])
-            y = int(string[2])
-            seating_map[x][y] = 'X'
-        file.close()
-    seating_chart = seating_map
-
-
-    
-        
+    cost = ReservationCosts()
+    seat_price = cost.get_seat_price(cost.matrix, seat)
+    reservation_num = "blah blah plart plart pleau" # temporary. Replace with actual code.
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
     
-    #THIS IS WHERE YOU WILL IMPLEMENT CODE TO POPULATE THE SYMBOL FIELD WITH STOCK OPTIONS
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
-    if login is True:
-        seating_map = [['O']*4 for row in range(12)]
-        with open("reservations.txt", "r") as file:
-            for line in file:
-                string = line.split(",")
-                x = int(string[1])
-                y = int(string[2])
-                seating_map[x][y] = 'X'
-            file.close()
-        seating_chart = seating_map
-    else:
-        seating_chart = ''
 
+    reservation_list = ReservationList()
+    seating_chart = reservation_list.get_seating_chart()
+        # with open ('passcodes.txt', 'r') as file:
+        #     reader = csv.reader(file, delimiter=",")
+        #     for row in reader: 
+        #         if (request.form['username'] == 'admin1' and request.form['password'] == '12345'):
+        #             return redirect('reservations')
 
+        # userLoginList = []
+        # with open ('passcodes.txt', 'r') as file:
+        #     reader = csv.reader(file, delimiter=", ")
+        #     for row in reader: 
+        #         row[1] = row[1].strip()
+        #         userInfo.append(row)
+
+        # if request.method == 'POST' and form.validate_on_submit():
+        #     for user in userInfo:
+        #         if (request.form['username'] == user[0] and request.form['password'] == user[1]):
+        #             pass    # return redirect('reservations')
+        #             # Redirected for testing purposes
+        #             # We need to show the reservation table right here
+        #             # But I can't get anything to print in the form
+
+    cost = ReservationCosts()
+    total_sales = cost.get_total_sales(cost.matrix)

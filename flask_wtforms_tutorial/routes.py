@@ -23,13 +23,6 @@ def user_options():
 
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
-    
-    # with open ('passcodes.txt', 'r') as file:
-    #         reader = csv.reader(file, delimiter=",")
-    #         for row in reader: 
-    #             if (request.form['username'] == 'admin1' and request.form['password'] == '12345'):
-    #                 return redirect('reservations')
-    userInfo = getUserInfo()
 
     form = AdminLoginForm()
 
@@ -40,8 +33,6 @@ def admin():
                     # Redirected for testing purposes
                     # We need to show the reservation table right here
                     # But I can't get anything to print in the form
-
-    
 
 
     return render_template("admin.html", form=form, template="form-template")
