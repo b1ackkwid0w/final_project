@@ -24,12 +24,15 @@ def user_options():
 @app.route("/admin", methods=['GET', 'POST'])
 def admin():
 
-    form = AdminLoginForm()
     userInfo = getUserInfo()
+    form = AdminLoginForm()
+
     if request.method == 'POST' and form.validate_on_submit():
         for user in userInfo:
                 if (request.form['username'] == user[0] and request.form['password'] == user[1]):
-                    print("Reservation Table")
+                    return render_template("admin.html", form=form, template="form-template")
+                else:
+                    return redirect('/')
                     # Redirected for testing purposes
                     # We need to show the reservation table right here
                     # But I can't get anything to print in the form
