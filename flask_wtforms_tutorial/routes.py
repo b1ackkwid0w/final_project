@@ -25,7 +25,7 @@ def user_options():
 def admin():
 
     form = AdminLoginForm()
-
+    userInfo = getUserInfo()
     if request.method == 'POST' and form.validate_on_submit():
         for user in userInfo:
                 if (request.form['username'] == user[0] and request.form['password'] == user[1]):
@@ -49,24 +49,23 @@ def reservations():
         selectedSeat = int(request.form['seat'].strip()) - 1
         firstName = str(request.form['first_name'])
 
-        if(reservedSeats[selectedRow][selectedSeat]) == False:
-            writeReservation(firstName, selectedRow, selectedSeat)
-            
+        res_code_obj = ReservationCodeStuff()
+
+        if reservedSeats[selectedRow][selectedSeat] == False:
+            res_code_obj.writeReservation(firstName, selectedRow, selectedSeat)
+            res_code_obj.recent_reservation_num = res_code_obj.generateReservationCode(firstName)
             reservedSeats[selectedRow][selectedSeat] = True
-            return jsonify(reservedSeats)
-        else:
-            return "Sorry that seat is already reserved\n" + jsonify(reservedSeats)
 
     return render_template("reservations.html", form=form, template="form-template")
 
 def getUserInfo():
-     userInfo = []
-     with open ('passcodes.txt', 'r') as file:
-          reader = csv.reader(file, delimiter=",")
-          for row in reader: 
-               row[1] = row[1].strip()
-               userInfo.append(row)
-     return userInfo
+    userInfo = []
+    with open ('passcodes.txt', 'r') as file:
+        reader = csv.reader(file, delimiter=",")
+        for row in reader: 
+            row[1] = row[1].strip()
+            userInfo.append(row)
+    return userInfo
 
 def getReservedSeats():
     reservedSeats = []
@@ -85,18 +84,3 @@ def getReservedSeats():
                 reservedSeats[currentRow][currentSeat] = True
 
     return reservedSeats
-
-def writeReservation(firstName, row, seat):
-    reservationCode = str(generateReservationCode(firstName))
-    reservation = " " + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
-    with open('reservations.txt', 'a') as file:
-        file.write(reservation)
-
-def generateReservationCode(first_name):
-    reservation_num = ""  # initializing reservation number.
-    code = "INFOTC1040"  # code for generating the reservation number.
-
-    for i in range(len(first_name)):
-        reservation_num += first_name[i]
-        reservation_num += code[i]
-    reservation_num += code[len(first_name):]

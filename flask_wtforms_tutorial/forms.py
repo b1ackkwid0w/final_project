@@ -27,12 +27,27 @@ class ReservationList():
         seating_map = [['O']*4 for row in range(12)]
         with open("reservations.txt", "r") as file:
             for line in file:
-                string = line.split(",")
+                string = line.split(", ")
                 x = int(string[1])
                 y = int(string[2])
                 seating_map[x][y] = 'X'
             file.close()
         return seating_map
+
+    def get_reservation_list(self):
+        reservation_list = []
+        with open("reservations.txt", "r") as file:
+            for line in file:
+                string = line.split(", ")
+                str_dict = {
+                    "first_name": string[0],
+                    "row": string[1],
+                    "seat": string[2],
+                    "code": string[3]
+                }
+                reservation_list.append(str_dict)
+            file.close()
+        return reservation_list
 
 class ReservationCosts():
     matrix = [100, 75, 50, 100]
@@ -96,7 +111,30 @@ class ReservationForm(FlaskForm):
 
     cost = ReservationCosts()
     seat_price = cost.get_seat_price(cost.matrix, seat)
-    reservation_num = "blah blah plart plart pleau" # temporary. Replace with actual code.
+
+    res_obj = ReservationList()
+    res_list = res_obj.get_reservation_list()
+    reservation_num = res_list[len(res_list)-1]['code']
+
+class ReservationCodeStuff():
+    recent_reservation_num = "error"
+
+    def writeReservation(self, firstName, row, seat):
+        gen_obj = ReservationCodeStuff()
+        reservationCode = str(gen_obj.generateReservationCode(firstName))
+        reservation = "" + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
+        with open('reservations.txt', 'a') as file:
+            file.write(reservation)
+
+    def generateReservationCode(self, first_name):
+        reservation_num = ""  # initializing reservation number.
+        code = "INFOTC1040"  # code for generating the reservation number.
+
+        for i in range(len(first_name)):
+            reservation_num += first_name[i]
+            reservation_num += code[i]
+        reservation_num += code[len(first_name):]
+        return reservation_num
 
 class AdminLoginForm(FlaskForm):
     """Admin login form"""
