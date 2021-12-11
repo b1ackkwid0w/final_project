@@ -13,7 +13,8 @@
 
   <h2 class="title">Reserve Your Seat</h2>
   
-  <form method="POST" action="/admin">
+  <form method="POST" action="/reservations">
+  <!-- <form method="POST"> -->
       {{ form.csrf_token }}
       <div class="form-field">{{ form.first_name.label }} {{ form.first_name }}
         {% if form.first_name.errors %}
@@ -65,7 +66,6 @@
             </ul>
           {% endif %}
         </div>
-
       </div>
       
       {{ form.reserve }}

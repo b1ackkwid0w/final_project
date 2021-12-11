@@ -33,6 +33,7 @@
           </ul>
         {% endif %}
       </div>
+      {% if form.login.data == True %}
       <div class="form-field">{{ form.seating_chart.label }} 
         <title>{% block title %}{% endblock %}</title>
         <ol>
@@ -47,7 +48,12 @@
             {% endfor %}
           </ul>
         {% endif %}
+        
+        {% if form.total_sales %}
+        <h2>Total Sales: {{ form.total_sales }}</h2>
+        {% endif %}
       </div>
+      {% endif %}
       {{ form.login }}
       
   </form>

@@ -120,9 +120,9 @@ class AdminLoginForm(FlaskForm):
     username = StringField('Username', [DataRequired()])
     password = StringField('Password', [DataRequired()])
     login = SubmitField("Login")
-    seating_chart = []
-    if login is True:
 
+    reservation_list = ReservationList()
+    seating_chart = reservation_list.get_seating_chart()
         # with open ('passcodes.txt', 'r') as file:
         #     reader = csv.reader(file, delimiter=",")
         #     for row in reader: 
@@ -144,14 +144,5 @@ class AdminLoginForm(FlaskForm):
         #             # We need to show the reservation table right here
         #             # But I can't get anything to print in the form
 
-        # get total sales
-        cost = ReservationCosts()
-        total = cost.get_total_sales(cost.matrix)
-        # print(total)
-
-        # get seating chart
-        reservation_list = ReservationList()
-        seating_chart = reservation_list.get_seating_chart()
-        
-    elif login is False:
-        error_code = "Incorrect username or password."
+    cost = ReservationCosts()
+    total_sales = cost.get_total_sales(cost.matrix)
