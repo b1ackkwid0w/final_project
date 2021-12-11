@@ -84,3 +84,22 @@ def getReservedSeats():
                 reservedSeats[currentRow][currentSeat] = True
 
     return reservedSeats
+<<<<<<< HEAD
+=======
+
+def writeReservation(firstName, row, seat):
+    reservationCode = str(generateReservationCode(firstName))
+    reservation = "" + firstName + ", " + str(row) + ", " + str(seat) + ", " + reservationCode + "\n"
+    with open('reservations.txt', 'a') as file:
+        file.write(reservation)
+
+def generateReservationCode(first_name):
+    reservation_num = ""  # initializing reservation number.
+    code = "INFOTC1040"  # code for generating the reservation number.
+
+    for i in range(len(first_name)):
+        reservation_num += first_name[i]
+        reservation_num += code[i]
+    reservation_num += code[len(first_name):]
+    return reservation_num
+>>>>>>> d622368b72b1790267610fba54d63a69c1065be0
