@@ -1,5 +1,9 @@
 # final_project
 
+Note: Immediate updates to reservations.txt file may not be available due to Docker Container version update. Documentation suggests file mounting to solve issue. References attached:
+https://github.com/docker/for-win/issues/5530
+https://docs.docker.com/storage/bind-mounts/
+
 Project: Trip Reservation System
 Project Objectives
 To further gain experience and develop skill working with Docker and Flask, or another language/platform chosen by the scrum team.
